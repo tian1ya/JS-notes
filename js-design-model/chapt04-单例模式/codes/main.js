@@ -1,29 +1,20 @@
-Function.prototype.before = function (beforeFn) {
-  var __self = this
-  return function () {
-    beforeFn.apply(this, arguments)
-    // 执行新函数，修正 this
-    return __self.apply(this, arguments) // 执行原函数
+var Singleton = function ( name ) {
+  this.name = name
+  this.instance = null
+}
+
+Singleton.prototype.getName = function () {
+  alert( this.name )
+}
+
+Singleton.getInstance = function (name) {
+  if (!this.instance) {
+    this.instance = new Singleton(name)
   }
+  return this.instance
 }
 
-Function.prototype.after = function (afterFn) {
-  var __self = this
-  return function () {
-    var ret = __self.apply(this, arguments) 
-    afterFn.apply(this, arguments)
-    return ret
-  }
-}
+var a= Singleton.getInstance("11")
+var b= Singleton.getInstance("22")
 
-var func = function() {
-  console.log(2)
-}
-
-func = func.before( function () {
-  console.log(1)
-}).after(function () {
-  console.log(3)
-})
-
-func()
+alert(a === b)
