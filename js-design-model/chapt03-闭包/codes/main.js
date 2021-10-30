@@ -1,14 +1,29 @@
-var A = function(name) {
-  this.name = name
+Function.prototype.before = function (beforeFn) {
+  var __self = this
+  return function () {
+    beforeFn.apply(this, arguments)
+    // 执行新函数，修正 this
+    return __self.apply(this, arguments) // 执行原函数
+  }
 }
 
-var B = function() {
-  A.apply(this, arguments)
+Function.prototype.after = function (afterFn) {
+  var __self = this
+  return function () {
+    var ret = __self.apply(this, arguments) 
+    afterFn.apply(this, arguments)
+    return ret
+  }
 }
 
-B.prototype.getName = function () {
-  return this.name
+var func = function() {
+  console.log(2)
 }
 
-var b = new B("sven")
-console.log(b.getName()) // sven
+func = func.before( function () {
+  console.log(1)
+}).after(function () {
+  console.log(3)
+})
+
+func()
